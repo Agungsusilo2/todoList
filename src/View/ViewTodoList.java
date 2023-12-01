@@ -21,7 +21,6 @@ public class ViewTodoList {
         System.out.println("MENAMBAH TODO");
         Scanner input = new Scanner(System.in);
         System.out.println("===========================++++++++===========");
-        System.out.println("Silahkan Anda ketik todo (x untuk keluar)");
         System.out.println("Task | Description | dueDate | Categories");
         System.out.println("===========================++++++++===========");
         System.out.print("Task : ");

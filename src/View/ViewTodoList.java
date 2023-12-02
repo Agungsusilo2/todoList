@@ -5,9 +5,11 @@ import Entity.TodoList;
 import Service.TodoListServiceImp;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class ViewTodoList {
     private TodoListServiceImp todoListServiceImp;
@@ -16,10 +18,9 @@ public class ViewTodoList {
         this.todoListServiceImp = todoListServiceImp;
     }
 
-
     private  void addTodoList(){
-        System.out.println("MENAMBAH TODO");
         Scanner input = new Scanner(System.in);
+        System.out.println("MENAMBAH TODO");
         System.out.println("===========================++++++++===========");
         System.out.println("Task | Description | dueDate | Categories");
         System.out.println("===========================++++++++===========");
@@ -75,6 +76,69 @@ public class ViewTodoList {
             }
         }
     }
+
+    private void updateTodoList() {
+        Scanner input = new Scanner(System.in);
+        System.out.println("MENGUPDATE TODO");
+        System.out.println("===========================++++++++===========");
+        System.out.println("Task | Description | dueDate | Categories");
+        System.out.println("===========================++++++++===========");
+        System.out.print("Silahkan Pilih NoIdentity yang mau diupdate : ");
+        System.out.print("Silahkan Masukkan UUID : ");
+        String inputNoIdentyString = input.next();
+
+        try {
+            UUID inputNoIdenty = UUID.fromString(inputNoIdentyString);
+
+        input.nextLine();
+
+        System.out.print("Task : ");
+        String inputTask = input.nextLine();
+
+        if (inputTask.equalsIgnoreCase("x")) {
+            System.out.println("Batal membuat TODO");
+            return;
+        }
+
+        System.out.print("Description : ");
+        String inputDescription = input.nextLine();
+
+        System.out.print("dueDate (yyyy-MM-dd) : ");
+        String inputDueDate = input.nextLine();
+        LocalDate dueDate;
+        try {
+            dueDate = LocalDate.parse(inputDueDate);
+        } catch (DateTimeParseException e) {
+            System.out.println("Format tanggal salah. Harap masukkan tanggal dengan format yyyy-MM-dd.");
+            return;
+        }
+
+        Categories[] categories;
+        categories = Categories.values();
+
+        Integer i = 1;
+        for (var category : categories) {
+            System.out.println(i + ". " + category);
+            i++;
+        }
+
+        System.out.print("Categories : ");
+        String inputCategory = input.nextLine();
+
+        try {
+            Categories category = Categories.valueOf(inputCategory.toUpperCase());
+
+            this.todoListServiceImp.UpdateTodoListService(inputNoIdenty, new TodoList(inputTask, inputDescription,
+                    dueDate, category));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error format tidak didukung ");
+        }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     public void viewTodoList() {
         Scanner input = new Scanner(System.in);
             while (true) {
@@ -84,6 +148,7 @@ public class ViewTodoList {
                     System.out.println("Menu ");
                     System.out.println("1. Tambah Todo");
                     System.out.println("2. Hapus Todo");
+                    System.out.println("3. Update Todo");
                     System.out.println("x. Keluar Todo");
 
                     System.out.print("Silahkan Masukkan Pilihan : ");
@@ -93,6 +158,8 @@ public class ViewTodoList {
                         this.addTodoList();
                     } else if (Objects.equals(inputUser, "2")) {
                         this.deleteTodoList();
+                    } else if(Objects.equals(inputUser,"3")){
+                        this.updateTodoList();
                     } else if (Objects.equals(inputUser, "x")) {
                         break;
                     } else {

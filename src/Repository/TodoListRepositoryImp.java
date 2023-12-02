@@ -2,10 +2,12 @@ package Repository;
 
 import Entity.TodoList;
 
+import java.util.UUID;
+
 public class TodoListRepositoryImp implements TodoListRepository {
+
     public TodoList[] todoLists = new TodoList[10];
 
-    private TodoListRepositoryImp todoListRepositoryImp;
     @Override
     public void save(TodoList todoList) {
         int currentIndex = 0;
@@ -28,7 +30,7 @@ public class TodoListRepositoryImp implements TodoListRepository {
             return false;
         }
 
-        for (int i = number-1; i < this.todoLists.length - 1; i++) {
+        for (int i = number - 1; i < this.todoLists.length - 1; i++) {
             this.todoLists[i] = this.todoLists[i + 1];
         }
         this.todoLists[this.todoLists.length - 1] = null;
@@ -41,4 +43,17 @@ public class TodoListRepositoryImp implements TodoListRepository {
     public TodoList[] findAll() {
         return this.todoLists;
     }
+
+    @Override
+    public boolean update(UUID number, TodoList updateTodoList) {
+        for (int i = 0; i < this.todoLists.length; i++) {
+            if (this.todoLists[i] != null && this.todoLists[i].getNoIdentity().equals(number)) {
+                this.todoLists[i] = updateTodoList;
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }
